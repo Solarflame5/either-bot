@@ -33,8 +33,9 @@ async def send_wyr(interaction: discord.Interaction):
     either = scrape_either()
     wyr_embed = discord.Embed(
         title=either["preface"],
-        description=either["option_a"] + "\n" + either["option_b"]
     )
+    wyr_embed.add_field(name="Option A", value=either["option_a"])
+    wyr_embed.add_field(name="OR", value="")
+    wyr_embed.add_field(name="Option B", value=either["option_b"])
     await interaction.followup.send(embed=wyr_embed, ephemeral=False)
-
 client.run(bot_token)
