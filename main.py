@@ -11,6 +11,8 @@ def scrape_either():
     either["preface"] = either_soup.find("h3", {"class": "preface"}).string
     either["option_a"] = either_soup.find_all("span", {"class": "option-text"})[0].string
     either["option_b"] = either_soup.find_all("span", {"class": "option-text"})[1].string
+    either["title"] = either_soup.find("h2", {"id": "question-title"}).string
+    either["desc"] = either_soup.find("p", {"class": "more-info"}).string
     return either
 
 # Read bot token from "token.txt" in the same folder as "main.py"
@@ -32,10 +34,13 @@ async def send_wyr(interaction: discord.Interaction):
     await interaction.response.defer(ephemeral=False, thinking=True)
     either = scrape_either()
     wyr_embed = discord.Embed(
-        title=either["preface"],
+        title=either["title"],
+        description=either["preface"]
     )
     wyr_embed.add_field(name="Option A", value=either["option_a"])
     wyr_embed.add_field(name="OR", value="")
     wyr_embed.add_field(name="Option B", value=either["option_b"])
+    wyr_embed.set_footer(text=either["desc"])
     await interaction.followup.send(embed=wyr_embed, ephemeral=False)
+    
 client.run(bot_token)
