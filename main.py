@@ -27,7 +27,7 @@ tree = app_commands.CommandTree(client)
 @client.event
 async def on_ready():
     print('logged in as {0.user}'.format(client))
-    await tree.sync() # ONLY UNCOMMENT ONCE WHEN YOU RUN THE BOT FOR THE FIRST TIME
+    # await tree.sync() # ONLY UNCOMMENT ONCE WHEN YOU RUN THE BOT FOR THE FIRST TIME
 
 @tree.command(name="wyr", description="Get a question from either.io")
 async def send_wyr(interaction: discord.Interaction):
@@ -35,12 +35,15 @@ async def send_wyr(interaction: discord.Interaction):
     either = scrape_either()
     wyr_embed = discord.Embed(
         title=either["title"],
-        description=either["preface"]
+        description=either["preface"],
+        color=discord.Color.from_rgb(253, 101, 98)
     )
     wyr_embed.add_field(name="Option A", value=either["option_a"])
     wyr_embed.add_field(name="OR", value="")
     wyr_embed.add_field(name="Option B", value=either["option_b"])
     wyr_embed.set_footer(text=either["desc"])
-    await interaction.followup.send(embed=wyr_embed, ephemeral=False)
-    
+    sent_message = await interaction.followup.send(embed=wyr_embed, ephemeral=False)
+    await sent_message.add_reaction("🅰")
+    await sent_message.add_reaction("🅱")
+
 client.run(bot_token)
